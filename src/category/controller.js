@@ -22,3 +22,14 @@ export const create = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const count = async (req, res, next) => {
+  try {
+    const service = new CategoryService();
+    const nameCount = await service.getCountByName(req.query.name);
+    return success(res, 200, { count: nameCount });
+  } catch (error) {
+    if (error.code === 2000) return badRequest(res, 400, { success: false, message: error.message });
+    return next(error);
+  }
+};

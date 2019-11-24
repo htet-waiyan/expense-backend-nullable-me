@@ -5,7 +5,7 @@ const CategorySchema = new mongoose.Schema({
   description: { type: String, trim: true },
   isSystemCategory: { type: Boolean, default: false },
   colorLabel: { type: String, default: '#CDDC39' },
-  icon: String,
+  icon: { type: String, default: 'start' },
 }, { timestamps: true });
 
 export default mongoose.model('Category', CategorySchema);
