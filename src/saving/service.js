@@ -23,8 +23,8 @@ export default class SavingService {
     }
   }
 
-  async getLatestSaving(savingYear) {
-    const query = {};
+  async getLatestSaving(user, savingYear) {
+    const query = { user };
     if (savingYear) {
       query.savingYear = savingYear;
       return this.saving.findOne(query);
