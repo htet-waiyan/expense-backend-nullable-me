@@ -29,7 +29,7 @@ export default class ExpenseService {
         { timestamp: { $gte: fromDate } },
         { timestamp: { $lte: toDate } },
       ],
-    });
+    }).populate('category');
   }
 
   /**
