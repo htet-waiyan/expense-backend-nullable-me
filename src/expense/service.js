@@ -1,9 +1,11 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable class-methods-use-this */
 import Expense from './model';
-import BudgetService from '../budget/service';
-import SavingService from '../saving/service';
+import AllocationService from '../allocation/service';
 import moment from 'moment';
 import { businessError } from '../util';
 import logger from '../logger';
+import { EXPENSES_LIST_GROUPBY } from './enum';
 
 export default class ExpenseService {
   constructor() {
@@ -12,24 +14,64 @@ export default class ExpenseService {
 
   async recordNewExpense(pojo) {
     try {
-      const budgetService = new BudgetService();
-      const latestBudget = await budgetService.getLatestBudget(pojo.user);
+      const budgetService = new AllocationService();
+      const latestAllocation = await budgetService.getLatestAllocation({ user: pojo.user });
       // TODO: to determine overspand
-      if (!latestBudget) return businessError('No budget associated found');
+      if (!latestAllocation) return businessError('No budget associated found');
+      // eslint-disable-next-line no-underscore-dangle
+      pojo.allocation = latestAllocation._id;
       return this.expense.create(pojo);
     } catch (error) {
       throw error;
     }
   }
 
-  async getExpensesDateRange(fromDate, toDate) {
+  async getExpensesDateRange(user, fromDate, toDate, order, groupBy) {
     logger.info('Getting expenses from %d to %d', fromDate, toDate);
-    return this.expense.find({
+    const expenseList = await this.expense.find({
+      user,
       $and: [
         { timestamp: { $gte: fromDate } },
         { timestamp: { $lte: toDate } },
       ],
-    }).populate('category');
+    }).populate('category')
+      .sort({ timestamp: order });
+    if (groupBy === EXPENSES_LIST_GROUPBY.CATEGORY) {
+      return this.groupExpensesByCategory(expenseList);
+    }
+    return this.groupExpensesByDate(expenseList);
+  }
+
+  async groupExpensesByDate(expenses = []) {
+    return expenses.reduce((group, curr) => {
+      const date = moment(curr.timestamp, 'X').format('YYYYMMDD');
+      const groupByDate = group[date] || [];
+      groupByDate.push(curr);
+      group[date] = groupByDate;
+      return group;
+    }, {});
+  }
+
+  async groupExpensesByCategory(expenses = []) {
+    return expenses.reduce((group, curr) => {
+      if (!group[curr.category.title]) {
+        group[curr.category.title] = curr.amount;
+      } else {
+        group[curr.category.title].amount += curr.amount;
+      }
+      return group;
+    }, {});
+  }
+
+  async getMtdSpend(user, from, to) {
+    const expenseList = await this.expense.find({
+      user,
+      $and: [
+        { timestamp: { $gte: from } },
+        { timestamp: { $lte: to } },
+      ],
+    });
+    return expenseList.reduce((a, b) => a + b.amount, 0);
   }
 
   /**
@@ -41,12 +83,12 @@ export default class ExpenseService {
     try {
       const fromDate = moment().startOf('month').unix();
       const toDate = moment().endOf('month').unix();
-      const savingService = new SavingService();
-      const mtdExpenses = await this.getExpensesDateRange(fromDate, toDate);
-      const latestSaving = await savingService.getLatestSaving(user);
-      const expense = mtdExpenses.reduce((a, b) => a + b.amount, 0);
+      const allocationService = new AllocationService();
+      const mtdExpenses = await this.getExpensesDateRange(user, fromDate, toDate, -1);
+      const allocation = await allocationService.getLatestAllocation({ user });
+      const expense = await this.getMtdSpend(user, fromDate, toDate);
       return {
-        saving: latestSaving.amount,
+        saving: allocation.savingAmount,
         expense,
         transactions: mtdExpenses,
       };

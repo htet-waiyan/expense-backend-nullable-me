@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import user from '../user';
 import budget from '../budget';
-import saving from '../saving';
 import category from '../category';
 import expense from '../expense';
+import income from '../income';
+import allocation from '../allocation';
+
 import logger from '../logger';
 import {
   jwtAuthorize,
@@ -17,9 +19,10 @@ router.get('/echo', (req, res) => {
 
 router.use('/user', user);
 router.use('/budget', budget);
-router.use('/saving', saving);
 router.use('/category', category);
 router.use('/expense', jwtAuthorize, expense);
+router.use('/income', jwtAuthorize, income);
+router.use('/allocation', jwtAuthorize, allocation);
 
 router.use((err, req, res) => {
   logger.error('Error in servicing request %j', err);

@@ -14,6 +14,7 @@ const ExpenseSchema = new mongoose.Schema({
   // to determine with which budget scheme this expense is associate with
   // auto select latest budget scheme
   budget: { type: mongoose.Schema.Types.ObjectId, ref: 'Budget' },
+  allocation: { type: mongoose.Schema.Types.ObjectId, ref: 'Allocation' },
   isOverSpend: { type: Boolean, default: false },
   timestamp: { type: Number, default: moment().unix() },
 }, { timestamps: true });
