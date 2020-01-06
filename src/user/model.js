@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import { PREFER_LOGIN } from './enum';
+import { PREFER_LOGIN, BASE_CURRENCY } from './enum';
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -41,6 +41,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: Object.keys(PREFER_LOGIN),
     default: PREFER_LOGIN.EMAIL,
+  },
+  baseCurrency: {
+    type: String,
+    enum: Object.keys(BASE_CURRENCY),
+    default: BASE_CURRENCY.SGD,
   },
 }, { timestamps: true });
 

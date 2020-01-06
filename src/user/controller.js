@@ -15,7 +15,7 @@ export const register = async (req, res, next) => {
 export const getUser = async (req, res, next) => {
   try {
     const service = new UserService();
-    const data = await service.getUserProfile(req.params.id);
+    const data = await service.getUserProfile(req.user);
     return success(res, 200, data);
   } catch (error) {
     return next(error);

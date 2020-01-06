@@ -17,7 +17,7 @@ router.get('/echo', (req, res) => {
   res.status(200).json({ message: 'Hello World!!!' });
 });
 
-router.use('/user', user);
+router.use('/user', jwtAuthorize, user);
 router.use('/budget', budget);
 router.use('/category', category);
 router.use('/expense', jwtAuthorize, expense);
