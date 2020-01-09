@@ -18,7 +18,7 @@ export const record = async (req, res, next) => {
 export const mtdList = async (req, res, next) => {
   try {
     const service = new ExpenseService();
-    const data = await service.getMtdSummary(req.user);
+    const data = await service.getMtdSummary(req.user, req.query.groupBy);
     return success(res, 200, { success: true, data });
   } catch (error) {
     if (error.code === 2000) {
@@ -26,6 +26,4 @@ export const mtdList = async (req, res, next) => {
     }
     return next(error);
   }
-}
-
-export const remove = async (req, res, next) => {};
+};

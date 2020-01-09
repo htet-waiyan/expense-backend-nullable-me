@@ -26,7 +26,7 @@ export default class ExpenseService {
     }
   }
 
-  async getExpensesDateRange(user, fromDate, toDate, order, groupBy) {
+  async getExpensesDateRange(user, fromDate, toDate, order, groupBy = EXPENSES_LIST_GROUPBY.DATE) {
     logger.info('Getting expenses from %d to %d', fromDate, toDate);
     const expenseList = await this.expense.find({
       user,
@@ -79,17 +79,18 @@ export default class ExpenseService {
    * @param {*} from - YYYY-MM-DD format
    * @param {*} to - YYYY-MM-DD format
    */
-  async getMtdSummary(user) {
+  async getMtdSummary(user, groupBy) {
     try {
       const fromDate = moment().startOf('month').unix();
       const toDate = moment().endOf('month').unix();
       const allocationService = new AllocationService();
-      const mtdExpenses = await this.getExpensesDateRange(user, fromDate, toDate, -1);
+      const mtdExpenses = await this.getExpensesDateRange(user, fromDate, toDate, groupBy);
       const allocation = await allocationService.getLatestAllocation({ user });
       const expense = await this.getMtdSpend(user, fromDate, toDate);
       return {
         saving: allocation.savingAmount,
-        expense,
+        expense: allocation.expenseAmount,
+        totalSpend: expense,
         transactions: mtdExpenses,
       };
     } catch (error) {
