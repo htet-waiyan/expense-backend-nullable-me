@@ -36,10 +36,13 @@ export default class ExpenseService {
       ],
     }).populate('category')
       .sort({ timestamp: order });
-    if (groupBy === EXPENSES_LIST_GROUPBY.CATEGORY) {
-      return this.groupExpensesByCategory(expenseList);
+    if (groupBy === EXPENSES_LIST_GROUPBY.DATE) {
+      return this.groupExpensesByDate(expenseList);
     }
-    return this.groupExpensesByDate(expenseList);
+    if (groupBy === EXPENSES_LIST_GROUPBY.CHART) {
+      return this.groupExpensesByChart(expenseList);
+    }
+    return this.groupExpensesByCategory(expenseList);
   }
 
   async groupExpensesByDate(expenses = []) {
@@ -58,6 +61,17 @@ export default class ExpenseService {
         group[curr.category.title] = curr.amount;
       } else {
         group[curr.category.title] += curr.amount;
+      }
+      return group;
+    }, {});
+  }
+
+  async groupExpensesByChart(expenses = []) {
+    return expenses.reduce((group, curr) => {
+      if (!group[curr.category.title]) {
+        group[curr.category.title] = curr;
+      } else {
+        group[curr.category.title].amount += curr.amount;
       }
       return group;
     }, {});
