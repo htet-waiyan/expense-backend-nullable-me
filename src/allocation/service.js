@@ -37,7 +37,7 @@ export default class SavingService {
   }
 
   async getLatestAllocation(query) {
-    const allAllocations = await this.allocation.find(query).sort({ period: -1 }).limit(1);
+    const allAllocations = await this.allocation.find(query).sort({ period: -1, timestamp: -1 }).limit(1);
     return allAllocations[0];
   }
 }

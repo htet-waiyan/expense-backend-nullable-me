@@ -57,7 +57,7 @@ export default class ExpenseService {
       if (!group[curr.category.title]) {
         group[curr.category.title] = curr.amount;
       } else {
-        group[curr.category.title].amount += curr.amount;
+        group[curr.category.title] += curr.amount;
       }
       return group;
     }, {});
@@ -79,17 +79,23 @@ export default class ExpenseService {
    * @param {*} from - YYYY-MM-DD format
    * @param {*} to - YYYY-MM-DD format
    */
-  async getMtdSummary(user, groupBy) {
+  async getMtdSummary(user, from, to, groupBy) {
     try {
-      const fromDate = moment().startOf('month').unix();
-      const toDate = moment().endOf('month').unix();
+      let fromDate = moment().startOf('month').unix();
+      let toDate = moment().endOf('month').unix();
+      if (from) {
+        fromDate = moment(from, 'YYYYMM').startOf('month').unix();
+      }
+      if (to) {
+        toDate = moment(from, 'YYYYMM').endOf('month').unix();
+      }
       const allocationService = new AllocationService();
-      const mtdExpenses = await this.getExpensesDateRange(user, fromDate, toDate, groupBy);
-      const allocation = await allocationService.getLatestAllocation({ user });
+      const mtdExpenses = await this.getExpensesDateRange(user, fromDate, toDate, -1, groupBy);
+      const allocation = await allocationService.getLatestAllocation({ user, period: { $lte: from || +moment().format('YYYYMM') } });
       const expense = await this.getMtdSpend(user, fromDate, toDate);
       return {
-        saving: allocation.savingAmount,
-        expense: allocation.expenseAmount,
+        saving: (allocation || {}).savingAmount || 0,
+        expense: (allocation || {}).expenseAmount || 0,
         totalSpend: expense,
         transactions: mtdExpenses,
       };
