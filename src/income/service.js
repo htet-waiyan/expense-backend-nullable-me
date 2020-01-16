@@ -38,4 +38,8 @@ export default class SavingService {
 
     return 0;
   }
+
+  async getAllIncomes(user) {
+    return this.income.find({ user });
+  }
 }

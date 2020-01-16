@@ -18,7 +18,16 @@ export const totalIncome = async (req, res, next) => {
     const data = await service.getTotalIncome(req.user);
     return success(res, 200, { totalIncome: data });
   } catch (error) {
-    console.log(error);
+    return next(error);
+  }
+};
+
+export const getAll = async (req, res, next) => {
+  try {
+    const service = new IncomeService();
+    const data = await service.getAllIncomes(req.user);
+    return success(res, 200, { data });
+  } catch (error) {
     return next(error);
   }
 };
