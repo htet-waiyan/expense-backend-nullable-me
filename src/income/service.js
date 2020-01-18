@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
+// TODO: fix circular dependencies
 import mongoose from 'mongoose';
 import Income from './model';
 import AllocationService from '../allocation/service';
@@ -41,18 +44,39 @@ export default class SavingService {
   }
 
   async getAllIncomes(user) {
-    return this.income.find({ user });
+    return this.income.find({ user }).lean();
   }
 
   async remove(id, user) {
     try {
       const allocationService = new AllocationService();
+      const removingIncome = await this.income.findById(id);
       const latestAllocation = await allocationService.getLatestAllocation({ user });
       const totalIncome = await this.getTotalIncome(user);
-      if (latestAllocation.expenseAmount > totalIncome) {
+      if (latestAllocation.expenseAmount > (totalIncome - removingIncome.amount)) {
         return businessError('Expense allocation is more than new total income', BIZ_ERROR_CODES.EXPENSE_MORE_THAN_INCOME);
       }
       return this.income.findByIdAndRemove(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async update(id, newIncome, user) {
+    try {
+      const allocationService = new AllocationService();
+      const latestAllocation = await allocationService.getLatestAllocation({ user });
+      const allIncomes = await this.getAllIncomes(user);
+      const totalIncome = allIncomes.map((income) => {
+        if (income._id.toString() === newIncome._id) {
+          income.amount = newIncome.amount;
+        }
+        return income;
+      }).reduce((a, b) => a + b.amount, 0);
+      if (latestAllocation.expenseAmount > totalIncome) {
+        return businessError('Expense allocation is more than new total income', BIZ_ERROR_CODES.EXPENSE_MORE_THAN_INCOME);
+      }
+      return this.income.findByIdAndUpdate(id, newIncome, { lean: true });
     } catch (error) {
       throw error;
     }

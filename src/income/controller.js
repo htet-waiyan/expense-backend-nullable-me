@@ -42,3 +42,14 @@ export const remove = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const update = async (req, res, next) => {
+  try {
+    const service = new IncomeService();
+    const data = await service.update(req.params.id, req.body, req.user);
+    return success(res, 200, data);
+  } catch (error) {
+    if (error.code === 2000) return res.status(400).json({ error });
+    return next(error);
+  }
+};
