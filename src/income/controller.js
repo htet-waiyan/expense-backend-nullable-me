@@ -31,3 +31,14 @@ export const getAll = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const remove = async (req, res, next) => {
+  try {
+    const service = new IncomeService();
+    const data = await service.remove(req.params.id, req.user);
+    return success(res, 200, data);
+  } catch (error) {
+    if (error.code === 2000) return res.status(400).json({ error });
+    return next(error);
+  }
+};

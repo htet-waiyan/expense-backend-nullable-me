@@ -1,6 +1,9 @@
-const BUSINESS_ERROR = 2000;
 // const DATABASE_ERROR = 1000;
 // const SERVER_ERROR = 500;
+const ERROR_CODES = {
+  GENERAL_BUSINESS_ERROR: 2000,
+  EXPENSE_MORE_THAN_INCOME: 2100,
+}
 
 export const success = (res, status, entity) => {
   if (entity) {
@@ -23,8 +26,11 @@ export const notFound = res => (entity) => {
   return entity;
 };
 
-export const businessError = (customErrorMessage) => {
+export const businessError = (customErrorMessage, customCode) => {
   const error = new Error(customErrorMessage);
-  error.code = BUSINESS_ERROR;
+  error.code = ERROR_CODES.GENERAL_BUSINESS_ERROR;
+  error.customCode = customCode;
   throw error;
 };
+
+export const BIZ_ERROR_CODES = ERROR_CODES;

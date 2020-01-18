@@ -8,7 +8,7 @@ export const create = async (req, res, next) => {
     const data = await service.allocateIncomes(req.body);
     return success(res, 200, data);
   } catch (error) {
-    if (error.code === 2000) return res.status(401).json({ message: error.message });
+    if (error.code === 2000) return res.status(400).json({ error });
     return next(error);
   }
 };
@@ -19,7 +19,7 @@ export const update = async (req, res, next) => {
     const data = await service.updateAllocation(req.params.id, req.body);
     return success(res, 200, data);
   } catch (error) {
-    if (error.code === 2000) return res.status(401).json({ message: error.message });
+    if (error.code === 2000) return res.status(400).json({ error });
     return next(error);
   }
 }
@@ -31,7 +31,7 @@ export const getByMonths = async (req, res, next) => {
     const data = await service.getAllocationMaps({ user: req.user });
     return success(res, 200, data);
   } catch (error) {
-    if (error.code === 2000) return res.status(401).json({ message: error.message });
+    if (error.code === 2000) return res.status(400).json({ error });
     return next(error);
   }
 };
