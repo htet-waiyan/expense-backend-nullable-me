@@ -37,7 +37,20 @@ export default class SavingService {
   }
 
   async getLatestAllocation(query) {
-    const allAllocations = await this.allocation.find(query).sort({ period: -1, timestamp: -1 }).limit(1);
+    const allAllocations = await this.allocation.find(query)
+      .sort({ period: -1, timestamp: -1 }).limit(1);
     return allAllocations[0];
+  }
+
+  async updateAllocation(id, newAllocation) {
+    try {
+      const thisMonth = moment().format('YYYYMM');
+      if (+thisMonth !== newAllocation.period) {
+        return businessError('Not allow to update past month allocation');
+      }
+      return this.allocation.findByIdAndUpdate(id, newAllocation, { lean: true });
+    } catch (error) {
+      throw error;
+    }
   }
 }
