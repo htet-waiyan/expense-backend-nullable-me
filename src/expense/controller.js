@@ -18,7 +18,21 @@ export const record = async (req, res, next) => {
 export const mtdList = async (req, res, next) => {
   try {
     const service = new ExpenseService();
-    const data = await service.getMtdSummary(req.user, req.query.from, req.query.to, req.query.groupBy);
+    const data = await service
+      .getMtdSummary(req.user, req.query.from, req.query.to, req.query.groupBy);
+    return success(res, 200, { success: true, data });
+  } catch (error) {
+    if (error.code === 2000) {
+      return res.status(400).json({ message: error.message });
+    }
+    return next(error);
+  }
+};
+
+export const remove = async (req, res, next) => {
+  try {
+    const service = new ExpenseService();
+    const data = await service.remove(req.params.id);
     return success(res, 200, { success: true, data });
   } catch (error) {
     if (error.code === 2000) {

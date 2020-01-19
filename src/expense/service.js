@@ -118,4 +118,8 @@ export default class ExpenseService {
       throw error;
     }
   }
+
+  async remove(id) {
+    return this.expense.findByIdAndRemove(id);
+  }
 }
