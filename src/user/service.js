@@ -10,6 +10,10 @@ export default class UserService {
   async registerNewuser(userPojo) {
     try {
       logger.info('Registering new user %j', userPojo);
+      const emailCount = await this.countBy({ email: userPojo.email });
+      if (emailCount > 0) {
+        return businessError('This email is already registered', 5001);
+      }
       return this.user.create(userPojo);
     } catch (error) {
       throw error;
@@ -43,5 +47,9 @@ export default class UserService {
     } catch (err) {
       throw err;
     }
+  }
+
+  async countBy(query) {
+    return this.user.count(query);
   }
 }

@@ -24,7 +24,6 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     trim: true,
-    // required: true,
   },
   salary: {
     type: Number,
@@ -47,6 +46,7 @@ const UserSchema = new mongoose.Schema({
     enum: Object.keys(BASE_CURRENCY),
     default: BASE_CURRENCY.SGD,
   },
+  googleId: String,
 }, { timestamps: true });
 
 UserSchema.plugin(uniqueValidator, { message: '{VALUE} already existed' });
