@@ -52,4 +52,8 @@ export default class UserService {
   async countBy(query) {
     return this.user.count(query);
   }
+
+  async patchUser(id, patch) {
+    return this.user.findByIdAndUpdate(id, { $set: patch });
+  }
 }

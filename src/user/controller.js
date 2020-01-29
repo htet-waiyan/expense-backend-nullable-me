@@ -33,3 +33,14 @@ export const updateSalary = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const patchUserProfile = async (req, res, next) => {
+  try {
+    const service = new UserService();
+    await service.patchUser(req.params.id, req.body);
+    return success(res, 200, { ok: true, message: 'Successfully update the salary' });
+  } catch (error) {
+    if (error.code === 2000) return badRequest(res, 400, { message: error.message });
+    return next(error);
+  }
+}
