@@ -36,20 +36,21 @@ export default class ExpenseService {
       ],
     }).populate('category')
       .sort({ timestamp: order });
-    if (groupBy === EXPENSES_LIST_GROUPBY.DATE) {
-      return this.groupExpensesByDate(expenseList);
+    console.log('Expense ', expenseList);
+    switch (groupBy) {
+      case EXPENSES_LIST_GROUPBY.DATE: return this.groupExpensesByDate(expenseList);
+      case EXPENSES_LIST_GROUPBY.CHART: return this.groupExpensesByChart(expenseList);
+      case EXPENSES_LIST_GROUPBY.MONTH_YEAR: return this.groupExpensesByMonthYear(expenseList);
+      default: return this.groupExpensesByCategory(expenseList);
     }
-    if (groupBy === EXPENSES_LIST_GROUPBY.CHART) {
-      return this.groupExpensesByChart(expenseList);
-    }
-    return this.groupExpensesByCategory(expenseList);
   }
 
   async groupExpensesByDate(expenses = []) {
     return expenses.reduce((group, curr) => {
-      const date = moment(curr.timestamp, 'X').format('YYYYMMDD');
+      const date = `${moment(curr.timestamp, 'X').format('YYYYMMDD')}_`;
       const groupByDate = group[date] || [];
       groupByDate.push(curr);
+      console.log(date);
       group[date] = groupByDate;
       return group;
     }, {});
@@ -77,6 +78,18 @@ export default class ExpenseService {
     }, {});
   }
 
+  async groupExpensesByMonthYear(expenses = []) {
+    return expenses.reduce((group, curr) => {
+      const date = moment(curr.timestamp, 'X').format('YYYYMM');
+      if (!group[date]) {
+        group[date] = curr.amount;
+      } else {
+        group[date] += curr.amount;
+      }
+      return group;
+    }, {});
+  }
+
   async getMtdSpend(user, from, to) {
     const expenseList = await this.expense.find({
       user,
@@ -94,6 +107,7 @@ export default class ExpenseService {
    * @param {*} to - YYYY-MM-DD format
    */
   async getMtdSummary(user, from, to, groupBy) {
+    logger.info('Getting expense from %s to %s ', from, to);
     try {
       let fromDate = moment().startOf('month').unix();
       let toDate = moment().endOf('month').unix();
@@ -101,7 +115,7 @@ export default class ExpenseService {
         fromDate = moment(from, 'YYYYMM').startOf('month').unix();
       }
       if (to) {
-        toDate = moment(from, 'YYYYMM').endOf('month').unix();
+        toDate = moment(to, 'YYYYMM').endOf('month').unix();
       }
       const allocationService = new AllocationService();
       const mtdExpenses = await this.getExpensesDateRange(user, fromDate, toDate, -1, groupBy);
