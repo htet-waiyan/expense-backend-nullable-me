@@ -15,13 +15,13 @@ import {
 const router = new Router();
 
 router.get('/echo', (req, res) => {
-  res.status(200).json({ message: 'Hello World!!!' });
+  res.status(200).json({ message: 'Spllit API Server' });
 });
 
 router.use('/register', registeration);
 router.use('/user', jwtAuthorize, user);
-router.use('/budget', budget);
-router.use('/category', category);
+router.use('/budget', jwtAuthorize, budget);
+router.use('/category', jwtAuthorize, category);
 router.use('/expense', jwtAuthorize, expense);
 router.use('/income', jwtAuthorize, income);
 router.use('/allocation', jwtAuthorize, allocation);

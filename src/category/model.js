@@ -7,6 +7,7 @@ const CategorySchema = new mongoose.Schema({
   tags: [String],
   colorLabel: { type: String, default: '#CDDC39' },
   icon: { type: String, default: 'start' },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
 
 export default mongoose.model('Category', CategorySchema);

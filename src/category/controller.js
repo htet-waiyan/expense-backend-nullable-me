@@ -4,7 +4,8 @@ import { success, badRequest } from '../util';
 export const fetchAll = async (req, res, next) => {
   try {
     const service = new CategoryService();
-    const data = await service.getAllCategories();
+    const query = { $or: [{ isSystemCategory: true }, { user: req.user }] };
+    const data = await service.getAllCategories(query);
     return success(res, 200, data);
   } catch (error) {
     if (error.code === 2000) return badRequest(res, 400, { success: false, message: error.message });
