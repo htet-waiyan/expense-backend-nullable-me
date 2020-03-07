@@ -17,6 +17,7 @@ const ExpenseSchema = new mongoose.Schema({
   allocation: { type: mongoose.Schema.Types.ObjectId, ref: 'Allocation' },
   isOverSpend: { type: Boolean, default: false },
   timestamp: { type: Number, default: moment().unix() },
+  expenseDate: { type: Number },
 }, { timestamps: true });
 
 export default mongoose.model('Expense', ExpenseSchema);
