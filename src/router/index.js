@@ -15,7 +15,7 @@ import {
 const router = new Router();
 
 router.get('/echo', (req, res) => {
-  res.status(200).json({ message: 'Spllit API Server' });
+  res.status(200).json({ message: 'Spllit API Server Deployed by CodeDeploy #1' });
 });
 
 router.use(clientAuthorize);
