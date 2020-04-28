@@ -14,4 +14,10 @@ export const jwtAuthorize = (req, res, next) => {
   }
 };
 
+export const clientAuthorize = (req, res, next) => {
+  const appSecret = req.headers['x-app-key'] || req.query.appKey;
+  if (appSecret === process.env.APP_SECRET) next();
+  else res.sendStatus(401);
+};
+
 export const queryMongo = (req, res, next) => {}

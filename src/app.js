@@ -6,8 +6,18 @@ import router from './router';
 
 const app = express();
 
-// TODO: restrict only some origins
-app.use(cors());
+const corsWhiteList = (process.env.CORS_ORIGINS || '').split(',');
+const corsOptions = {
+  origin: function(origin, callback) {
+    if (corsWhiteList.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(config.apiRoot, router);

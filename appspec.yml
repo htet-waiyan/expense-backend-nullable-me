@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/apps/spllit-backend #where to store the artifacts
+hooks:
+  ApplicationStart:
+    - location: /home/ubuntu/start_servers.sh #start script for the website
+      timeout: 300
+      runas: ubuntu
