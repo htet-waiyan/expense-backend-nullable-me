@@ -19,6 +19,10 @@ permissions:
     type:
       - file
 hooks:
+  ApplicationStop:
+    - location: bin/stop_server.sh #start script for the website
+      timeout: 300
+      runas: ubuntu
   ApplicationStart:
     - location: bin/start_server.sh #start script for the backend server
       timeout: 300
