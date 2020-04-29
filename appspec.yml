@@ -5,9 +5,9 @@ files:
     destination: /home/ubuntu/apps/spllit-backend #where to store the artifacts
 permissions:
   - object: /home/ubuntu/apps/spllit-backend
-  - owner: ubuntu
-  - mode: 755
-  - type: directory
+    owner: ubuntu
+    mode: 755
+    type: directory
 hooks:
   ApplicationStart:
     - location: bin/start_servers.sh #start script for the website
