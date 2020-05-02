@@ -20,7 +20,7 @@ permissions:
       - file
 hooks:
   ApplicationStop:
-    - location: bin/stop_server.sh #start script for the website
+    - location: bin/stop_server.sh #stop script for the website
       timeout: 300
       runas: ubuntu
   ApplicationStart:
