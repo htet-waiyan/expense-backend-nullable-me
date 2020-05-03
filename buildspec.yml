@@ -24,24 +24,24 @@ phases:
     #runtime-versions:
       # name: version
       # name: version
-    #commands:
-      # - command
-      # - command
+    commands:
+      - echo npm install all dependencies
+      - npm install
   pre_build:
     commands:
-      - echo Pre Build. Running npm install all dependencies
-      - npm install # run npm install to install all dependencies
+      - echo Skip Pre Builds
   build:
     commands:
-      - echo Running npm install with production only flag
-      - npm install --only=production
+      - echo Skip Build. No need to build
       # for now, just only npm install at pre build stage
       # - echo Running npm install 
       # - npm install # run npm install to install all dependencies
       # - command
       # - command
-  #post_build:
-    #commands:
+  post_build:
+    commands:
+      - echo Completed Build. Listing all built artifacts
+      - ls -lrst
       # - command
       # - command
 #reports:

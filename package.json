@@ -1,7 +1,7 @@
 {
-  "name": "kashward-as",
+  "name": "kashward-backend",
   "version": "1.0.0",
-  "description": "Kashward authentication & authorization server",
+  "description": "Kashward backend server",
   "main": "src",
   "scripts": {
     "start": "node .",
