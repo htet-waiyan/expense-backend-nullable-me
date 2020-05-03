@@ -29,7 +29,7 @@ phases:
       # - command
   pre_build:
     commands:
-      - echo Pre Build. Running npm install
+      - echo Pre Build. Running npm install all dependencies
       - npm install # run npm install to install all dependencies
   build:
     commands:
