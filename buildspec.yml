@@ -29,7 +29,7 @@ phases:
       - npm install
   pre_build:
     commands:
-      - echo Skip Pre Builds
+      - echo Skip Pre Build
   build:
     commands:
       - echo Skip Build. No need to build
