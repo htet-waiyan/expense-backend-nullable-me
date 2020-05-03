@@ -55,6 +55,7 @@ phases:
 artifacts:
   files:
     - '**/*' #copy all build files to S3 location
+    - node_modules/**/*
     # - location
     # - location
   #name: $(date +%Y-%m-%d)
