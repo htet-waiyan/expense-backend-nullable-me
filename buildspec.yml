@@ -1,7 +1,7 @@
 version: 0.2
 
-#env:
-  #variables:
+env:
+  NODE_ENV: "production"
      # key: "value"
      # key: "value"
   #parameter-store:
@@ -29,10 +29,12 @@ phases:
       # - command
   pre_build:
     commands:
-      - echo Running npm install 
+      - echo Pre Build. Running npm install
       - npm install # run npm install to install all dependencies
   build:
     commands:
+      - echo Running npm install with production only flag
+      - npm install --only=production
       # for now, just only npm install at pre build stage
       # - echo Running npm install 
       # - npm install # run npm install to install all dependencies
@@ -52,7 +54,7 @@ phases:
     #file-format: JunitXml | CucumberJson
 artifacts:
   files:
-      - '**/*' #copy all build files to S3 location
+    - '**/*' #copy all build files to S3 location
     # - location
     # - location
   #name: $(date +%Y-%m-%d)
