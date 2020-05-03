@@ -41,6 +41,8 @@ phases:
   post_build:
     commands:
       - echo Completed Build. Listing all built artifacts
+      - touch copy_me
+      - echo testing code build > copy_me
       - ls -lrst
       # - command
       # - command
