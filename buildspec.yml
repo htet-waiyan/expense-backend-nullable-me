@@ -55,6 +55,7 @@ phases:
     #discard-paths: yes
     #file-format: JunitXml | CucumberJson
 artifacts:
+  type: zip
   files:
     - '**/*' #copy all build files to S3 location
     # - location
