@@ -27,6 +27,11 @@ router.use('/expense', jwtAuthorize, expense);
 router.use('/income', jwtAuthorize, income);
 router.use('/allocation', jwtAuthorize, allocation);
 
+router.use('*', (req, res) => {
+  logger.error('Request comes in %s', req.path);
+  res.sendStatus(404);
+});
+
 router.use((err, req, res) => {
   logger.error('Error in servicing request %j', err);
   res.sendStatus(500);

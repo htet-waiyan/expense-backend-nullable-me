@@ -22,7 +22,7 @@ const config = {
   all: {
     env: process.env.NODE_ENV || 'development',
     port: requireProcessEnv('PORT') || 3000,
-    apiRoot: process.env.API_ROOT || '',
+    apiRoot: process.env.SPLLIT_API_ROOT || '',
     log: {
       level: 'debug',
       dir: '/app/spllit',
